@@ -6,7 +6,7 @@
 [![Cosmology: Astropy & sncosmo](https://img.shields.io/badge/Cosmology-Astropy%20%7C%20sncosmo-F37626)](https://sncosmo.readthedocs.io/)
 [![Catalog: IAU TNS](https://img.shields.io/badge/Cross--Match-IAU%20TNS-1D76DB)](https://www.wis-tns.org/)
 
-**Author:** [Steve Jurado](https://github.com/jurados) ([@jurados](https://github.com/jurados)) & ALeRCE Hackathon Collaborators  
+**Authors:** [Steve Jurado](https://github.com/jurados) ([@jurados](https://github.com/jurados)) & [Xaviera Julio](https://github.com/Xavissss) ([@Xavissss](https://github.com/Xavissss))  
 **Event & Context:** Developed during the **[ALeRCE Hackathon 2026](https://science.alerce.online/)** (*Automatic Learning for the Rapid Classification of Events* — [https://science.alerce.online/](https://science.alerce.online/))  
 **Date / Last Updated:** March 2026
 
@@ -17,19 +17,6 @@
 **`ALeRCE-ZTFLSST-HubbleConstant`** is an end-to-end observational cosmology and time-domain astrophysics project created during the **March 2026 ALeRCE Hackathon** ([science.alerce.online](https://science.alerce.online/)). The primary objective of this work is to **measure the Hubble Constant ($H_0$)** directly from wide-field astronomical broker streams by combining **Zwicky Transient Facility (ZTF)** Type Ia Supernova (`SNIa`) light curves classified by the **ALeRCE** broker with spectroscopic redshifts from the **IAU Transient Name Server (TNS)**.
 
 By standardizing **$N = 1{,}442$ Type Ia Supernovae** at peak brightness via the Phillips decline-rate relation ($\Delta m_{15}$), **SFD98** Galactic dust extinction corrections, and **`sncosmo`** cross-filter K-corrections, we construct a Hubble–Lemaître diagram yielding **$H_0 = 68.16 \pm 0.16\,\mathrm{km\,s^{-1}\,Mpc^{-1}}$ (stat)** in flat $\Lambda\mathrm{CDM}$. Complementing our ZTF cosmological analysis, we benchmark the **ALeRCE Stamp Classifier** on **$1{,}694$ visually inspected Vera C. Rubin Observatory (LSST)** alerts and $200$ early LSST supernova candidates to define high-purity selection cuts for next-generation Rubin cosmology.
-
----
-
-## Table of Contents
-
-1. [Scientific Motivation & The $H_0$ Tension](#1-scientific-motivation--the-h_0-tension)
-2. [End-to-End Cosmological & Broker Pipeline](#2-end-to-end-cosmological--broker-pipeline)
-3. [Stage I — ALeRCE ZTF Query & TNS Spherical Cross-Matching](#3-stage-i--alerce-ztf-query--tns-spherical-cross-matching)
-4. [Stage II — Parametric Light-Curve Modeling ($\Delta m_{15}$ & $T_{\max}$)](#4-stage-ii--parametric-light-curve-modeling-delta-m_15--t_max)
-5. [Stage III — SN Ia Standardization ($m_B^{\mathrm{eff}}$), K-Corrections & Dust Extinction](#5-stage-iii--sn-ia-standardization-m_bmathrmeff-k-corrections--dust-extinction)
-6. [Stage IV — Hubble–Lemaître Diagram & $\chi^2$ Cosmological Fit ($H_0$)](#6-stage-iv--hubblelemaître-diagram--chi2-cosmological-fit-h_0)
-7. [Stage V — Preparing for Rubin: LSST Stamp Classifier Audit](#7-stage-v--preparing-for-rubin-lsst-stamp-classifier-audit)
-8. [References](#8-references)
 
 ---
 
