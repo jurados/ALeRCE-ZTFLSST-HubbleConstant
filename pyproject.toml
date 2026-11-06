@@ -1,0 +1,19 @@
+[project]
+name = "alercehackton2026"
+version = "0.1.0"
+description = "ALeRCE hackathon 2026 notebooks"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    "numpy",
+    "scipy",
+    "pandas",
+    "matplotlib",
+    "seaborn",
+    "astropy",
+    "sncosmo",
+    "dustmaps",
+    "alerce",
+    "ipykernel",
+    "ipywidgets>=8.1.9",
+    "pyarrow>=26.0.1",
+]
