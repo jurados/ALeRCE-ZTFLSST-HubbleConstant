@@ -8,25 +8,53 @@
 
 **Authors:** [Steve Jurado](https://github.com/jurados) ([@jurados](https://github.com/jurados)) & [Xaviera Julio](https://github.com/Xavissss) ([@Xavissss](https://github.com/Xavissss))  
 **Event & Context:** Developed during the **[ALeRCE Hackathon 2026](https://science.alerce.online/)** (*Automatic Learning for the Rapid Classification of Events* — [https://science.alerce.online/](https://science.alerce.online/))  
-**Date / Last Updated:** March 2026
+**Date / Last Updated:** November 2026 (pipeline refactor in `ALeRCE_Hackathon.ipynb`; original analysis March 2026)
 
 ---
 
 ## Overview
 
-**`ALeRCE-ZTFLSST-HubbleConstant`** is an end-to-end observational cosmology and time-domain astrophysics project created during the **March 2026 ALeRCE Hackathon** ([science.alerce.online](https://science.alerce.online/)). The primary objective of this work is to **measure the Hubble Constant ($H_0$)** directly from wide-field astronomical broker streams by combining **Zwicky Transient Facility (ZTF)** Type Ia Supernova (`SNIa`) light curves classified by the **ALeRCE** broker with spectroscopic redshifts from the **IAU Transient Name Server (TNS)**.
+**`ALeRCE-ZTFLSST-HubbleConstant`** is an end-to-end observational cosmology and time-domain astrophysics project started during the **March 2026 ALeRCE Hackathon** ([science.alerce.online](https://science.alerce.online/)). The goal is to **measure the Hubble Constant ($H_0$)** directly from broker alert streams. We combine **Zwicky Transient Facility (ZTF)** Type Ia supernova (`SNIa`) light curves classified by the **ALeRCE** broker with spectroscopic redshifts from the **IAU Transient Name Server (TNS)**.
 
-By standardizing **$N = 1{,}442$ Type Ia Supernovae** at peak brightness via the Phillips decline-rate relation ($\Delta m_{15}$), **SFD98** Galactic dust extinction corrections, and **`sncosmo`** cross-filter K-corrections, we construct a Hubble–Lemaître diagram yielding **$H_0 = 68.16 \pm 0.16\,\mathrm{km\,s^{-1}\,Mpc^{-1}}$ (stat)** in flat $\Lambda\mathrm{CDM}$. Complementing our ZTF cosmological analysis, we benchmark the **ALeRCE Stamp Classifier** on **$1{,}694$ visually inspected Vera C. Rubin Observatory (LSST)** alerts and $200$ early LSST supernova candidates to define high-purity selection cuts for next-generation Rubin cosmology.
+The project has two parts:
+
+- **Current pipeline (`ALeRCE_Hackathon.ipynb`, Nov 2026).** Selects recent SN Ia candidates with the ALeRCE **forced-photometry BHRF classifier** (`lc_classifier_BHRF_forced_phot`). It cross-matches them against TNS (**146 / 226** candidates matched within $2''$), downloads detections, non-detections and **forced photometry**, and fits each light curve with the **Villar et al. (2019)** parametric model to measure the peak and the **rest-frame decline rate $\Delta m_{15}(g)$**.
+- **First $H_0$ measurement (`alerce.ipynb`, March 2026).** Uses a larger earlier sample from the legacy `lc_classifier`. It standardizes **$N = 1{,}442$ SNe Ia** (Phillips $\Delta m_{15}$ relation, SFD98 dust, `sncosmo` K-corrections) and fits a flat $\Lambda\mathrm{CDM}$ Hubble diagram, giving **$H_0 = 68.16 \pm 0.16\,\mathrm{km\,s^{-1}\,Mpc^{-1}}$ (stat)**. We also benchmark the **ALeRCE Stamp Classifier** on **$1{,}694$ visually inspected Rubin/LSST alerts**.
+
+> **Status:** the new forced-photometry sample has not yet been carried through standardization and the $H_0$ fit. The batch $\Delta m_{15}$ cell and the Hubble-constant cell in `ALeRCE_Hackathon.ipynb` are still being developed. The $H_0$ value quoted here comes from the March 2026 sample.
+
+---
+
+## Repository Contents
+
+| Path | Description |
+| :--- | :--- |
+| `ALeRCE_Hackathon.ipynb` | **Main notebook.** Covers the ALeRCE query, sky map, TNS cross-match, photometry download, Villar (2019) fits, $\Delta m_{15}$ and the $H_0$-tension figure. |
+| `alerce.ipynb` | March 2026 analysis: $m_B^{\mathrm{eff}}$ standardization, Hubble diagram and $\chi^2$ fit of $H_0$. |
+| `mB_eff_data.csv` | Standardized magnitudes $m_B^{\mathrm{eff}}$ for the March 2026 ZTF sample. |
+| `classification_FF_20260309.csv` | 1,694 visually labeled LSST alerts with Stamp Classifier predictions. |
+| `lsst_sn_candidates.csv` | Top 200 LSST SN candidates. |
+| `data/` *(git-ignored)* | `tns_public_objects.csv` plus cached `snia_{detections,non_detections,forced}.parquet`. |
+| `assets/figs/` | Figures used in this README. |
+
+### Setup
+
+```bash
+uv sync                      # installs dependencies from pyproject.toml / uv.lock (Python 3.12–3.13)
+uv run jupyter lab           # or select the .venv kernel in VS Code
+```
+
+The TNS public catalog must be placed at `data/tns_public_objects.csv`; you can download it from [wis-tns.org](https://www.wis-tns.org/). The photometry parquet files are downloaded automatically on the first run and cached in `data/`.
 
 ---
 
 ## 1. Scientific Motivation & The $H_0$ Tension
 
-Type Ia supernovae (SNe Ia)—thermonuclear disruptions of carbon–oxygen white dwarfs approaching the Chandrasekhar mass limit—serve as precision **standardizable candles** across cosmological distances. Yet, modern observational cosmology faces a persistent $\sim 5\sigma$ discrepancy known as the **Hubble Tension** between:
-- **Early-Universe / CMB + BAO Constraints:** Inferred assuming flat $\Lambda\mathrm{CDM}$ from the Cosmic Microwave Background (*Planck* 2018: $H_0 = 67.4 \pm 0.5\,\mathrm{km\,s^{-1}\,Mpc^{-1}}$; ACT-DR6 2025: $67.0 \pm 0.7$; BBN + DESI BAO 2024: $68.5 \pm 0.6$).
-- **Late-Universe Direct Distance Ladder:** Calibrated locally via Cepheids and Tip of the Red Giant Branch (TRGB) anchors (HST SH0ES 2024: $H_0 = 73.0 \pm 1.0\,\mathrm{km\,s^{-1}\,Mpc^{-1}}$; JWST SH0ES 2024: $73.4 \pm 1.2$).
+Type Ia supernovae (SNe Ia) are thermonuclear explosions of carbon–oxygen white dwarfs near the Chandrasekhar mass limit. They are precision **standardizable candles** across cosmological distances. However, modern cosmology faces a persistent $\sim 5\sigma$ disagreement, known as the **Hubble Tension**, between two kinds of measurement:
+- **Early-Universe / CMB + BAO constraints**, inferred assuming flat $\Lambda\mathrm{CDM}$ from the Cosmic Microwave Background: *Planck* 2018 gives $H_0 = 67.4 \pm 0.5\,\mathrm{km\,s^{-1}\,Mpc^{-1}}$; ACT-DR6 2025 gives $67.0 \pm 0.7$; BBN + DESI BAO 2024 gives $68.5 \pm 0.6$.
+- **The late-Universe direct distance ladder**, calibrated locally with Cepheid and Tip of the Red Giant Branch (TRGB) anchors: HST SH0ES 2024 gives $H_0 = 73.0 \pm 1.0\,\mathrm{km\,s^{-1}\,Mpc^{-1}}$; JWST SH0ES 2024 gives $73.4 \pm 1.2$.
 
-As sky surveys transition from ZTF ($\sim 10^6$ alerts/night) to the **Vera C. Rubin Observatory Legacy Survey of Space and Time (LSST; $\sim 10^7$ alerts/night)**, cosmological SN Ia samples are increasingly discovered, classified, and prioritized in real time by community brokers such as **[ALeRCE](https://science.alerce.online/)**. This work demonstrates how to bridge **automated broker classification (ZTF + LSST)** with **cosmological parameter inference ($H_0$)**.
+Sky surveys are moving from ZTF ($\sim 10^6$ alerts/night) to the **Vera C. Rubin Observatory Legacy Survey of Space and Time (LSST; $\sim 10^7$ alerts/night)**. As a result, cosmological SN Ia samples are increasingly discovered, classified and prioritized in real time by community brokers such as **[ALeRCE](https://science.alerce.online/)**. This work shows how to connect **automated broker classification (ZTF + LSST)** with **cosmological parameter inference ($H_0$)**.
 
 ---
 
@@ -34,17 +62,18 @@ As sky surveys transition from ZTF ($\sim 10^6$ alerts/night) to the **Vera C. R
 
 ```text
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│                 STAGE 1: BROKER QUERY & TNS CROSS-MATCHING                   │
-│  ALeRCE ZTF lc_classifier (class='SNIa', p >= 0.3)                           │
-│  ──► Multi-band PSF Photometry (fid=1: g, fid=2: r)                          │
-│  ──► Spherical KD-Tree Cross-Match vs. IAU TNS Catalog (sep <= 2.0 arcsec)   │
-│  ──► 1,466 spectroscopically anchored SNe Ia (df_snia_with_tns_match*.pkl)   │
+│          STAGE 1: BROKER QUERY & TNS CROSS-MATCHING  (ALeRCE_Hackathon)      │
+│  ALeRCE ZTF lc_classifier_BHRF_forced_phot (class='SNIa', p >= 0.59)         │
+│  ──► 285 candidates ──► lastmjd >= 60918 (1 Sep 2025) ──► 226 candidates     │
+│  ──► KD-tree sky match vs. IAU TNS (191,101 objects, sep <= 2.0 arcsec)      │
+│  ──► 146 candidates with a TNS counterpart                                   │
 └──────────────────────────────────────┬───────────────────────────────────────┘
                                        ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│              STAGE 2: PARAMETRIC LIGHT-CURVE FITTING (Δm15 & Tmax)           │
-│  Piecewise / Bazin-like Rise & Decline Model + 6th-Degree Polynomial Fit     │
-│  ──► Rest-frame Peak Epoch (Tmax ± e_Tmax) & 15-day Decline Rate (Δm15)      │
+│          STAGE 2: PHOTOMETRY & LIGHT-CURVE FITTING  (ALeRCE_Hackathon)       │
+│  detections + non-detections + forced photometry  ──►  data/*.parquet        │
+│  Villar et al. (2019) flux model per band (g, r, i), fit in μJy              │
+│  ──► Peak epoch & peak magnitude, rest-frame Δm15(g) with Monte-Carlo errors │
 └──────────────────────────────────────┬───────────────────────────────────────┘
                                        ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -52,7 +81,7 @@ As sky surveys transition from ZTF ($\sim 10^6$ alerts/night) to the **Vera C. R
 │  • Stretch Parameterization:  s = 1.24 - 0.18 * Δm15  (α = 0.60)             │
 │  • Galactic Dust Extinction:  Schlegel, Finkbeiner & Davis (SFD98; R_g=3.2)  │
 │  • Spectral K-Correction:     sncosmo Hsiao SN Ia Template (sdssg -> bessellb)│
-│  ──► Standardized Peak Magnitude mB_eff ± e_mB_eff for N = 1,442 SNe Ia      │
+│  ──► mB_eff ± e_mB_eff  (N = 1,442 SNe Ia in the March 2026 sample)          │
 └──────────────────────────────────────┬───────────────────────────────────────┘
                                        ▼
 ┌──────────────────────────────────────────────────────────────────────────────┐
@@ -70,46 +99,53 @@ As sky surveys transition from ZTF ($\sim 10^6$ alerts/night) to the **Vera C. R
 
 ---
 
-## 3. Stage I — ALeRCE ZTF Query & TNS Spherical Cross-Matching
+## 3. Stage I — ALeRCE ZTF Query & TNS Cross-Matching
 
-Candidate Type Ia supernovae are queried from the **ALeRCE ZTF Client** (`alerce.core.AlErce`) filtering by the Balanced Random Forest light-curve classifier (`lc_classifier`, taxonomy class `SNIa`, probability $P(\mathrm{SNIa}) \ge 0.3$). For every candidate `oid`, the pipeline downloads the multi-epoch PSF photometry (`magpsf`, `sigmapsf`, `mjd`, filter ID `fid`) and computes inverse-variance weighted astrometric centroids $(\bar{\alpha}, \bar{\delta})$.
+Candidate SNe Ia are queried from the **ALeRCE Python client** (`alerce.core.Alerce`) with the forced-photometry Balanced Hierarchical Random Forest classifier `lc_classifier_BHRF_forced_phot` (v2.1.0). The query selects class `SNIa` with $P(\mathrm{SNIa}) \ge 0.59$, ordered by `lastmjd` (descending, `page_size=2000`), and returns **285 objects**. We then keep only sources still active after **1 September 2025** (`lastmjd >= 60918`), which leaves **226 recent SN Ia candidates**.
 
-To anchor each photometric light curve with an unambiguous spectroscopic redshift $z_{\mathrm{TNS}}$ and classification, the ZTF centroids are cross-matched against the **IAU Transient Name Server (`tns_public_objects_260311.csv.zip`)** on the unit sphere $\mathbb{S}^2$ via `astropy.coordinates.SkyCoord.match_to_catalog_sky`:
+<p align="center">
+  <img src="assets/figs/ztf_snia_skymap_galactic.png" width="80%" alt="Sky distribution of ZTF SN Ia candidates in Galactic coordinates"/>
+</p>
 
-$$\Delta\theta = \arccos\!\left[\sin\bar{\delta}\sin\delta_{\mathrm{TNS}} + \cos\bar{\delta}\cos\delta_{\mathrm{TNS}}\cos(\bar{\alpha} - \alpha_{\mathrm{TNS}})\right] \le 2.0''$$
+*Mollweide projection in Galactic coordinates of the 226 candidates, colored by last detection MJD. The red curve shows the ecliptic and the dashed line shows the Galactic plane. Candidates avoid the Galactic plane, as expected for extragalactic transients.*
 
-This produces **$50{,}065$ photometric detections across $1{,}466$ unique ZTF SNe Ia** matched to $1{,}465$ TNS designations (`df_snia_with_tns_match_plus_dm15.pkl`), alongside a clean benchmark subset of $130$ local Universe SNe Ia (`df_snia_with_tns_match.csv`, $0.015 \le z \le 0.125$ with sub-arcsecond median separation $\langle\Delta\theta\rangle = 0.24''$).
+Each candidate position is matched to the **IAU TNS public catalog** (`data/tns_public_objects.csv`, 191,101 objects) with `SkyCoord.match_to_catalog_sky`. Each $(\alpha,\delta)$ position becomes a unit vector $\hat r = (\cos\delta\cos\alpha,\ \cos\delta\sin\alpha,\ \sin\delta)$, and a KD-tree finds the nearest neighbor by chord length $c$ in $\mathcal{O}(N\log M)$ time. The angular separation is then
+
+$$\theta = 2\arcsin\!\left(\frac{c}{2}\right).$$
+
+<p align="center">
+  <img src="assets/figs/ztf_tns_crossmatch_separation.png" width="60%" alt="ZTF–TNS nearest-neighbour separation histogram"/>
+</p>
+
+The separation distribution is clearly bimodal. True counterparts cluster around $\sim 0.1''$, while unrelated nearest neighbors lie at $\gtrsim 100''$. We adopt a threshold of $\theta \le 2.0''$, which gives **146 ZTF SN Ia candidates with a TNS counterpart**. For each match we attach `tns_name`, `tns_type`, `tns_redshift` and `tns_sep_arcsec`.
+
+The detections, non-detections and **forced photometry** of every candidate are then downloaded with `client.query_detections`, `query_non_detections` and `query_forced_photometry`. They are cached as `data/snia_{detections,non_detections,forced}.parquet`, so later runs only load them from disk.
 
 ---
 
-## 4. Stage II — Parametric Light-Curve Modeling ($\Delta m_{15}$ & $T_{\max}$)
+## 4. Stage II — Villar (2019) Light-Curve Fits & $\Delta m_{15}$
 
-Because astronomical survey cadence is irregular and interrupted by weather or lunar phase, the true peak epoch $T_{\max}$ and post-maximum decline rate $\Delta m_{15}$ (the magnitude drop between $T_{\max}$ and $T_{\max} + 15\,\mathrm{d}$ in the rest frame) must be extracted from continuous parametric fits:
+The light curves are fit in **flux space**. Forced-photometry AB magnitudes are converted to microjanskys with $F = 10^{-0.4\,(m - 23.9)}\,\mu\mathrm{Jy}$, and uncertainties are propagated as $\sigma_F = 0.4\ln(10)\,F\,\sigma_m$. Sentinel values ($m \ge 99$) and poor measurements ($\sigma_m \ge 1$) are discarded. Each band (`fid` = 1, 2, 3 → $g$, $r$, $i$) with more than 7 points is fit with the parametric SN model of **Villar et al. (2019)**:
 
-1. **Piecewise Exponential Rise & Linear Late-Time Decline Model:**
-   Converts observed AB magnitudes $m_{\mathrm{PSF}}$ into flux densities $F_{\nu} = 3631 \times 10^{-0.4\,m_{\mathrm{PSF}}}\,\mathrm{Jy}$ and fits an analytic Bazin-like rise with an exponential/linear cobalt-decay tail:
+$$F(t) = \begin{cases} \dfrac{A + \beta\,(t - t_0)}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}} + c, & t < t_1 \\[12pt] \dfrac{\left[A + \beta\,(t_1 - t_0)\right] e^{-(t - t_1)/\tau_{\mathrm{fall}}}}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}} + c, & t \ge t_1 \end{cases} \qquad t_1 = t_0 + \gamma$$
 
-   $$m_{\mathrm{model}}(t) = \begin{cases} A - \beta(t - t_0) - 2.5\log_{10}\!\left(\dfrac{e^{-(t - t_0)/\tau_{\mathrm{fall}}}}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}}\right) + c, & t < t_1 \\[10pt] A - \gamma(t - t_0) - 2.5\log_{10}\!\left(\dfrac{e^{-(t_1 - t_0)/\tau_{\mathrm{fall}}}}{1 + e^{-(t_1 - t_0)/\tau_{\mathrm{rise}}}}\right) + c, & t \ge t_1 \end{cases}$$
+The model is fit with bounded `scipy.optimize.curve_fit` on the peak-normalized flux. The peak $t_{\mathrm{peak}}$ is the maximum of the fitted curve. The **rest-frame decline rate** in $g$ is measured $15(1+z)$ observer-frame days after the peak:
 
-2. **Inverse-Variance Weighted Polynomial Interpolation (`ZTF25abqamzb_lightcurve.csv`):**
-   Fits a continuous degree-$K=6$ polynomial across a 500-point MJD grid around peak brightness by minimizing:
-
-   $$\chi^2(\mathbf{c}) = \sum_{i=1}^{N_b} \left(\frac{m_{b,i} - \sum_{k=0}^{6} c_{b,k}\,t_i^k}{\sigma_{m,b,i}}\right)^2$$
+$$\Delta m_{15} = m(t_{\mathrm{peak}} + 15) - m(t_{\mathrm{peak}}) = 2.5\log_{10}\frac{F(t_{\mathrm{peak}})}{F\!\left(t_{\mathrm{peak}} + 15\,(1+z)\right)}$$
 
 <p align="center">
-  <img src="assets/figs/ztf25abqamzb_poly_fit.png" width="88%" alt="ZTF25abqamzb Multi-Band Light Curve Fit"/>
+  <img src="assets/figs/ztf26aaebmad_villar_fit_dm15.png" width="85%" alt="ZTF26aaebmad Villar 2019 fit and Δm15"/>
 </p>
 
-| ZTF Object ID | Filter (`fid`) | Photometric Epochs ($N_{\mathrm{det}}$) | Peak Epoch $\widehat{t}_{\mathrm{peak}}$ [MJD] | Peak Apparent Magnitude $\widehat{m}_{\mathrm{peak}}$ [AB mag] | Observed Magnitude Range [AB mag] |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **`ZTF25abqamzb`** | $g$ (`fid = 1`) | $13$ | $60940.76$ | $18.61 \pm 0.09$ | $18.61 \to 20.97$ |
-| **`ZTF25abqamzb`** | $r$ (`fid = 2`) | $20$ | $60941.65$ | $18.51 \pm 0.07$ | $18.49 \to 20.15$ |
+*Example: **`ZTF26aaebmad`** ($z_{\mathrm{TNS}} = 0.0520$). The plot shows forced-photometry fluxes in $g$, $r$ and $i$ with Villar (2019) fits; stars mark each band's peak. The shaded area spans the 15 rest-frame days after the $g$-band peak, which gives **$\Delta m_{15}(g) = 1.73$ mag**. As expected for SNe Ia, the $g$ band peaks first and declines faster than $r$ and $i$.*
 
-> **Physical Interpretation:** The $g$-band light curve peaks $\Delta t \approx 0.89\,\mathrm{days}$ earlier than the $r$-band and exhibits a steeper post-maximum decline ($\Delta m_g \approx 2.36\,\mathrm{mag}$ over $32\,\mathrm{days}$ vs. $\Delta m_r \approx 1.66\,\mathrm{mag}$ over $49\,\mathrm{days}$), a classic signature of **$\mathrm{^{56}Ni} \to \mathrm{^{56}Co} \to \mathrm{^{56}Fe}$** radiative cooling and iron-group line blanketing in the blue optical passband.
+For the full sample, the notebook repeats the fit for every TNS-matched object with $\ge 10$ $g$-band points. A fit is rejected if the peak falls at the edge of the data or if there are no data at $t_{\mathrm{peak}} + 15(1+z)$. Uncertainties on $t_{\mathrm{peak}}$, $m_{\mathrm{peak},g}$ and $\Delta m_{15}$ come from **200 Monte-Carlo draws** from the fit covariance matrix. The results are merged into `df_snia` as `tpeak_g`, `m_peak_g`, `e_m_peak_g`, `dm15` and `e_dm15`. The ZTF $g,r$ magnitudes can also be converted to Johnson $B,V$ with the Jester et al. (2005) transformations, $B = g + 0.39(g-r) + 0.21$ and $V = g - 0.58(g-r) - 0.01$.
 
 ---
 
 ## 5. Stage III — SN Ia Standardization ($m_B^{\mathrm{eff}}$), K-Corrections & Dust Extinction
+
+> *Sections 5–6 describe the March 2026 analysis in `alerce.ipynb` (legacy `lc_classifier`, $P(\mathrm{SNIa}) \ge 0.3$, $N = 1{,}442$ SNe Ia after TNS matching). The next step is to apply the same standardization to the new forced-photometry $\Delta m_{15}$ sample.*
 
 To place each supernova on a uniform cosmological distance scale, raw observed green-band magnitudes $m_{\mathrm{obs}}$ are transformed into **standardized rest-frame Bessel $B$-band peak magnitudes ($m_B^{\mathrm{eff}}$)** through three physical corrections:
 
@@ -215,7 +251,15 @@ we suppress `BOGUS` contamination while preserving extragalactic transients for 
 
 ---
 
-## 8. References
+## 8. Next Steps
+
+- Run the batch $\Delta m_{15}$ fit over the 146 TNS-matched forced-photometry light curves and validate it against the single-object example.
+- Port the $m_B^{\mathrm{eff}}$ standardization (SFD98 dust, `sncosmo` K-correction, Phillips stretch) to the new sample and refit $H_0$.
+- Fit $M_0$ (or an external calibrator) jointly instead of fixing $M_0 = -19.3$, and add systematic uncertainties.
+
+---
+
+## 9. References
 
 1. **Förster, F., Cabrera-Vives, G., Castillo-Navarrete, E., et al.** (2021), *"The Automatic Learning for the Rapid Classification of Events (ALeRCE) Alert Broker"*, The Astronomical Journal, 161, 242. [doi:10.3847/1538-3881/abe9bc](https://doi.org/10.3847/1538-3881/abe9bc) | [science.alerce.online](https://science.alerce.online/)
 2. **Sánchez-Sáez, P., Reyes, I., Valenzuela, C., et al.** (2021), *"Alert Classification for the ALeRCE Broker System: The Light Curve Classifier"*, The Astronomical Journal, 161, 141. [doi:10.3847/1538-3881/abd5c1](https://doi.org/10.3847/1538-3881/abd5c1)
@@ -228,7 +272,9 @@ we suppress `BOGUS` contamination while preserving extragalactic transients for 
 9. **Planck Collaboration, Aghanim, N., Akrami, Y., et al.** (2020), *"Planck 2018 results. VI. Cosmological parameters"*, Astronomy & Astrophysics, 641, A6. [doi:10.1051/0004-6361/201833910](https://doi.org/10.1051/0004-6361/201833910)
 10. **DESI Collaboration, Adame, A. G., Aguilar, J., et al.** (2024), *"DESI 2024 VI: Cosmological Constraints from the Measurements of Baryon Acoustic Oscillations"*, arXiv:2404.03002. [doi:10.48550/arXiv.2404.03002](https://doi.org/10.48550/arXiv.2404.03002)
 11. **Bellm, E. C., Kulkarni, S. R., Graham, M. J., et al.** (2019), *"The Zwicky Transient Facility: System Overview, Performance, and First Results"*, Publications of the Astronomical Society of the Pacific, 131, 018002. [doi:10.1088/1538-3873/aaecbe](https://doi.org/10.1088/1538-3873/aaecbe)
-12. **Ivezić, Ž., Kahn, S. M., Tyson, J. A., et al.** (2019), *"LSST: From Science Drivers to Reference Design and Anticipated Data Products"*, The Astrophysical Journal, 873, 111. [doi:10.3847/1538-4357/ab042c](https://doi.org/10.3847/1538-4357/ab042c)
+12. **Villar, V. A., Berger, E., Miller, G., et al.** (2019), *"Supernova Photometric Classification Pipelines Trained on Spectroscopically Classified Supernovae from the Pan-STARRS1 Medium-Deep Survey"*, The Astrophysical Journal, 884, 83. [doi:10.3847/1538-4357/ab418c](https://doi.org/10.3847/1538-4357/ab418c)
+13. **Jester, S., Schneider, D. P., Richards, G. T., et al.** (2005), *"The Sloan Digital Sky Survey View of the Palomar-Green Bright Quasar Survey"*, The Astronomical Journal, 130, 873. [doi:10.1086/432466](https://doi.org/10.1086/432466)
+14. **Ivezić, Ž., Kahn, S. M., Tyson, J. A., et al.** (2019), *"LSST: From Science Drivers to Reference Design and Anticipated Data Products"*, The Astrophysical Journal, 873, 111. [doi:10.3847/1538-4357/ab042c](https://doi.org/10.3847/1538-4357/ab042c)
 
 ---
-*Last Updated: March 2026 — [ALeRCE Science & Hackathon 2026](https://science.alerce.online/)*
+*Last Updated: November 2026 — [ALeRCE Science & Hackathon 2026](https://science.alerce.online/)*
