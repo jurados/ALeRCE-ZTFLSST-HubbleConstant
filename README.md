@@ -111,7 +111,7 @@ Candidate SNe Ia are queried from the **ALeRCE Python client** (`alerce.core.Ale
 
 Each candidate position is matched to the **IAU TNS public catalog** (`data/tns_public_objects.csv`, 191,101 objects) with `SkyCoord.match_to_catalog_sky`. Each $(\alpha,\delta)$ position becomes a unit vector $\hat r = (\cos\delta\cos\alpha,\ \cos\delta\sin\alpha,\ \sin\delta)$, and a KD-tree finds the nearest neighbor by chord length $c$ in $\mathcal{O}(N\log M)$ time. The angular separation is then
 
-$$\theta = 2\arcsin\!\left(\frac{c}{2}\right).$$
+$$\theta = 2\arcsin\left(\frac{c}{2}\right).$$
 
 <p align="center">
   <img src="assets/figs/ztf_tns_crossmatch_separation.png" width="60%" alt="ZTF–TNS nearest-neighbour separation histogram"/>
@@ -127,7 +127,7 @@ The detections, non-detections and **forced photometry** of every candidate are 
 
 The light curves are fit in **flux space**. Forced-photometry AB magnitudes are converted to microjanskys with $F = 10^{-0.4\,(m - 23.9)}\,\mu\mathrm{Jy}$, and uncertainties are propagated as $\sigma_F = 0.4\ln(10)\,F\,\sigma_m$. Sentinel values ($m \ge 99$) and poor measurements ($\sigma_m \ge 1$) are discarded. Each band (`fid` = 1, 2, 3 → $g$, $r$, $i$) with more than 7 points is fit with the parametric SN model of **Villar et al. (2019)**:
 
-$$F(t) = \begin{cases} \dfrac{A + \beta\,(t - t_0)}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}} + c, & t < t_1 \\[12pt] \dfrac{\left[A + \beta\,(t_1 - t_0)\right] e^{-(t - t_1)/\tau_{\mathrm{fall}}}}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}} + c, & t \ge t_1 \end{cases} \qquad t_1 = t_0 + \gamma$$
+$$F(t) = \begin{cases} \dfrac{A + \beta(t - t_0)}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}} + c, & t < t_1 \\ \dfrac{\left[A + \beta\,(t_1 - t_0)\right] e^{-(t - t_1)/\tau_{\mathrm{fall}}}}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}} + c, & t \ge t_1 \end{cases} \qquad t_1 = t_0 + \gamma$$
 
 The model is fit with bounded `scipy.optimize.curve_fit` on the peak-normalized flux. The peak $t_{\mathrm{peak}}$ is the maximum of the fitted curve. The **rest-frame decline rate** in $g$ is measured $15(1+z)$ observer-frame days after the peak:
 
