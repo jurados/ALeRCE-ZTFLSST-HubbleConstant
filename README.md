@@ -19,9 +19,9 @@
 The project has two parts:
 
 - **Current pipeline (`ALeRCE_Hackathon.ipynb`, Nov 2026).** Selects recent SN Ia candidates with the ALeRCE **forced-photometry BHRF classifier** (`lc_classifier_BHRF_forced_phot`). It cross-matches them against TNS (**146 / 226** candidates matched within $2''$), downloads detections, non-detections and **forced photometry**, and fits each light curve with the **Villar et al. (2019)** parametric model to measure the peak and the **rest-frame decline rate $\Delta m_{15}(g)$**.
-- **First $H_0$ measurement (`alerce.ipynb`, March 2026).** Uses a larger earlier sample from the legacy `lc_classifier`. It standardizes **$N = 1{,}442$ SNe Ia** (Phillips $\Delta m_{15}$ relation, SFD98 dust, `sncosmo` K-corrections) and fits a flat $\Lambda\mathrm{CDM}$ Hubble diagram, giving **$H_0 = 68.16 \pm 0.16\,\mathrm{km\,s^{-1}\,Mpc^{-1}}$ (stat)**. We also benchmark the **ALeRCE Stamp Classifier** on **$1{,}694$ visually inspected Rubin/LSST alerts**.
+- **First $H_0$ measurement (March 2026; originally `alerce.ipynb`, now merged into `ALeRCE_Hackathon.ipynb`, older versions in git history).** Uses a larger earlier sample from the legacy `lc_classifier`. It standardizes **$N = 1{,}442$ SNe Ia** (Phillips $\Delta m_{15}$ relation, SFD98 dust, `sncosmo` K-corrections) and fits a flat $\Lambda\mathrm{CDM}$ Hubble diagram, giving **$H_0 = 68.16 \pm 0.16\,\mathrm{km\,s^{-1}\,Mpc^{-1}}$ (stat)**. We also benchmark the **ALeRCE Stamp Classifier** on **$1{,}694$ visually inspected Rubin/LSST alerts**.
 
-> **Status:** the new forced-photometry sample has not yet been carried through standardization and the $H_0$ fit. The batch $\Delta m_{15}$ cell and the Hubble-constant cell in `ALeRCE_Hackathon.ipynb` are still being developed. The $H_0$ value quoted here comes from the March 2026 sample.
+> **Status:** the standardization ($m_B^{\mathrm{eff}}$) and $\chi^2$ fit of $H_0$ for the new forced-photometry sample are now implemented in the *Hubble Constant* section of `ALeRCE_Hackathon.ipynb`, together with the March 2026 reference sample. The $H_0$ value quoted here still comes from the March 2026 sample; the forced-photometry result has not been run on the full sample yet.
 
 ---
 
@@ -29,8 +29,7 @@ The project has two parts:
 
 | Path | Description |
 | :--- | :--- |
-| `ALeRCE_Hackathon.ipynb` | **Main notebook.** Covers the ALeRCE query, sky map, TNS cross-match, photometry download, Villar (2019) fits, $\Delta m_{15}$ and the $H_0$-tension figure. |
-| `alerce.ipynb` | March 2026 analysis: $m_B^{\mathrm{eff}}$ standardization, Hubble diagram and $\chi^2$ fit of $H_0$. |
+| `ALeRCE_Hackathon.ipynb` | **Main notebook.** Covers the ALeRCE query, sky map, TNS cross-match, photometry download, Villar (2019) fits, $\Delta m_{15}$, $m_B^{\mathrm{eff}}$ standardization, the Hubble diagram with the $\chi^2$ fit of $H_0$, and the $H_0$-tension figure. |
 | `mB_eff_data.csv` | Standardized magnitudes $m_B^{\mathrm{eff}}$ for the March 2026 ZTF sample. |
 | `classification_FF_20260309.csv` | 1,694 visually labeled LSST alerts with Stamp Classifier predictions. |
 | `lsst_sn_candidates.csv` | Top 200 LSST SN candidates. |
@@ -145,7 +144,7 @@ For the full sample, the notebook repeats the fit for every TNS-matched object w
 
 ## 5. Stage III — SN Ia Standardization ($m_B^{\mathrm{eff}}$), K-Corrections & Dust Extinction
 
-> *Sections 5–6 describe the March 2026 analysis in `alerce.ipynb` (legacy `lc_classifier`, $P(\mathrm{SNIa}) \ge 0.3$, $N = 1{,}442$ SNe Ia after TNS matching). The next step is to apply the same standardization to the new forced-photometry $\Delta m_{15}$ sample.*
+> *Sections 5–6 describe the March 2026 analysis (legacy `lc_classifier`, $P(\mathrm{SNIa}) \ge 0.3$, $N = 1{,}442$ SNe Ia after TNS matching), originally in `alerce.ipynb` (see git history). The same standardization is applied to the new forced-photometry $\Delta m_{15}$ sample in `ALeRCE_Hackathon.ipynb`.*
 
 To place each supernova on a uniform cosmological distance scale, raw observed green-band magnitudes $m_{\mathrm{obs}}$ are transformed into **standardized rest-frame Bessel $B$-band peak magnitudes ($m_B^{\mathrm{eff}}$)** through three physical corrections:
 
