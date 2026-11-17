@@ -195,7 +195,7 @@ The binned residuals trend from about $+0.35$ mag at $z \approx 0.02$ to $-0.45$
 
 Supernovae only measure relative distances: the data constrain the combination $M_0 - 5\log_{10}H_0$, so $H_0$ and $M_0$ cannot both be fit.
 
-$$\frac{\Delta H_0}{H_0} \approx \frac{\ln 10}{5}\,\Delta M_0 \approx 0.46\,\Delta M_0 \quad\Rightarrow\quad \Delta M_0 = 0.05\ \mathrm{mag} \;\leftrightarrow\; \Delta H_0 \approx 1.6\ \mathrm{km\,s^{-1}\,Mpc^{-1}}$$
+$$\frac{\Delta H_0}{H_0} \approx \frac{\ln 10}{5}\Delta M_0 \approx 0.46\Delta M_0 \quad\Rightarrow\quad \Delta M_0 = 0.05\ \mathrm{mag} \leftrightarrow \Delta H_0 \approx 1.6\ \mathrm{km\,s^{-1}\,Mpc^{-1}}$$
 
 The Cepheid calibration of [Riess et al. (2022)](https://ui.adsabs.harvard.edu/abs/2022ApJ...934L...7R/abstract) gives $M_B = -19.253 \pm 0.027$. That uncertainty alone corresponds to $\sim \pm 0.9$ km s$^{-1}$ Mpc$^{-1}$, **about 5 times larger than the statistical error quoted above**. We did not find a single source for the rounded value $-19.3$ used here. The Riess et al. value was derived with a different standardization (Pantheon+), so it is not directly transferable to our $m_B^{\mathrm{eff}}$: using $M_0 = -19.253$ with the legacy sample gives $H_0 \approx 70$, not 73.
 
