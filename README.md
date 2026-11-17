@@ -119,9 +119,12 @@ The separation distribution is clearly bimodal: true counterparts cluster around
 
 ## 4. Stage II — Villar (2019) Light-Curve Fits & $\Delta m_{15}$
 
-Light curves are fit in **flux space**. Forced-photometry AB magnitudes are converted to microjanskys with $F = 10^{-0.4\,(m - 23.9)}\,\mu\mathrm{Jy}$, with errors propagated as $\sigma_F = 0.4\ln(10)\,F\,\sigma_m$. Sentinel values ($m \ge 99$) and poor measurements ($\sigma_m \ge 1$) are discarded. Each band (`fid` = 1, 2, 3 → $g$, $r$, $i$) is fit with the empirical model of **[Villar et al. (2019)](https://scixplorer.org/abs/2019ApJ...884...83V/abstract)**, a sigmoidal rise followed by a linear plateau and an exponential decay:
+Light curves are fit in **flux space**. Forced-photometry AB magnitudes are converted to microjanskys with $F = 10^{-0.4\,(m - 23.9)}\,\mu\mathrm{Jy}$, with errors propagated as $\sigma_F = 0.4\ln(10)F\sigma_m$. Sentinel values ($m \ge 99$) and poor measurements ($\sigma_m \ge 1$) are discarded. Each band (`fid` = 1, 2, 3 → $g$, $r$, $i$) is fit with the empirical model of **[Villar et al. (2019)](https://scixplorer.org/abs/2019ApJ...884...83V/abstract)**, a sigmoidal rise followed by a linear plateau and an exponential decay:
 
-$$F(t) = c + \begin{cases} \dfrac{A + \beta(t - t_0)}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}}, & t < t_1 \\[2ex] \dfrac{\left(A + \beta\gamma\right) e^{-(t - t_1)/\tau_{\mathrm{fall}}}}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}}, & t \ge t_1 \end{cases} \qquad t_1 = t_0 + \gamma$$
+$$F(t) = c + \begin{cases} 
+\dfrac{A + \beta(t - t_0)}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}}, & t < t_1 \\ 
+\dfrac{\left(A + \beta\gamma\right) e^{-(t - t_1)/\tau_{\mathrm{fall}}}}{1 + e^{-(t - t_0)/\tau_{\mathrm{rise}}}}, & t \ge t_1 
+\end{cases} \qquad t_1 = t_0 + \gamma$$
 
 The fit uses bounded `scipy.optimize.curve_fit` on the peak-normalized flux. The peak $t_{\mathrm{peak}}$ is the maximum of the fitted curve (not $t_0$). The **rest-frame decline rate** is measured $15(1+z)$ observer-frame days after the peak ([Phillips 1993](https://doi.org/10.1086/186970)):
 
