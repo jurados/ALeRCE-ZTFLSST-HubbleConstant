@@ -31,7 +31,7 @@ Everything lives in one notebook, **`ALeRCE_Hackathon.ipynb`**:
 | ZTF SN Ia candidates | $288 \to 229$ | `lc_classifier_BHRF_forced_phot`, $P \ge 0.59$, then `lastmjd >= 60918` |
 | With a TNS counterpart | **147** | Sky match within $2''$ |
 | $\Delta m_{15}(g)$ measured | **122** (119 with errors) | Villar (2019) fit, $\ge 10$ $g$-band points |
-| **$H_0$, forced photometry** ($N=119$) | **$72.34 \pm 0.60$** km s$^{-1}$ Mpc$^{-1}$ (stat) | $\chi^2/\mathrm{dof} = 5.20$ |
+| **$H_0$, forced photometry** ($N=119$) | **$72.37 \pm 0.60$** km s$^{-1}$ Mpc$^{-1}$ (stat) | $\chi^2/\mathrm{dof} = 5.21$ |
 | **$H_0$, legacy March 2026** ($N=1{,}442$) | **$68.28 \pm 0.16$** km s$^{-1}$ Mpc$^{-1}$ (stat) | $\chi^2/\mathrm{dof} = 2.57$; originally quoted as $68.16 \pm 0.16$ without the peculiar-velocity term |
 | LSST Stamp Classifier, `SN` recall | **93 %** (231 / 249) | Precision only **32.4 %** on the raw output |
 | …after pixel-flag and reliability cuts | precision **74.9 %**, recall **91.6 %**, F1 **82.4 %** | Cuts chosen on the same data (no held-out set) |
@@ -40,30 +40,8 @@ Everything lives in one notebook, **`ALeRCE_Hackathon.ipynb`**:
 **How to read the two $H_0$ values.** They are **not** independent measurements of the Hubble constant:
 
 - The absolute magnitude is fixed at $M_0 = -19.3$, and $H_0$ and $M_0$ are degenerate (Section 6.2). The quoted errors are statistical only.
-- The two samples differ by $5\log_{10}(72.34/68.28) \approx 0.13$ mag in their mean standardized magnitude. Because $M_0$ is fixed, that offset alone produces the 4 km s$^{-1}$ Mpc$^{-1}$ difference.
+- The two samples differ by $5\log_{10}(72.37/68.28) \approx 0.13$ mag in their mean standardized magnitude. Because $M_0$ is fixed, that offset alone produces the 4 km s$^{-1}$ Mpc$^{-1}$ difference.
 - $\chi^2/\mathrm{dof}$ of 5.2 and 2.6 mean the errors are underestimated. Scaling them by $\sqrt{\chi^2/\mathrm{dof}}$ gives $\pm 1.4$ and $\pm 0.26$, and the difference drops from ~6.5σ to ~3σ.
-
----
-
-## Repository Contents
-
-| Path | Description |
-| :--- | :--- |
-| `ALeRCE_Hackathon.ipynb` | **Main notebook.** ALeRCE query, TNS cross-match, photometry download, Villar fits, $\Delta m_{15}$, $m_B^{\mathrm{eff}}$ standardization, $H_0$ fit and Hubble diagram, $H_0$-tension figure, LSST classifier audit and ZTF–LSST cross-match. |
-| `data/tns_public_objects.csv` | IAU TNS public catalog (download from [wis-tns.org](https://www.wis-tns.org/)). |
-| `data/classification_FF_20260309.csv` | 1,694 visually labeled LSST alerts with Stamp Classifier probabilities. |
-| `data/*.parquet`, `data/ebv_sfd_irsa.csv` | Caches created automatically on the first run: ZTF detections / non-detections / forced photometry, the top-200 LSST SN candidates, and the IRSA dust values. |
-| `data/mB_eff_data.csv` *(optional)* | Standardized magnitudes of the legacy March 2026 sample. It was removed from the repository root, but it is in git history: `git show <commit>:mB_eff_data.csv > data/mB_eff_data.csv`. If present, the notebook fits it alongside the new sample. |
-| `assets/figs/` | Figures used in this README. |
-
-### Setup
-
-```bash
-uv sync                      # installs dependencies from pyproject.toml / uv.lock (Python 3.12–3.13)
-uv run jupyter lab           # or select the .venv kernel in VS Code
-```
-
-Place the TNS catalog at `data/tns_public_objects.csv`. Photometry is downloaded on the first run and cached in `data/`. Galactic extinction is queried from IRSA (`astroquery`), which needs internet access the first time and is cached afterwards.
 
 ---
 
@@ -190,9 +168,9 @@ where the last term is the peculiar-velocity error ($\sigma_v = 250$ km s$^{-1}$
   <img src="assets/figs/snia_hubble_diagram_forced_phot.png" width="84%" alt="Hubble diagram for the forced-photometry sample (N=119)"/>
 </p>
 
-*Forced-photometry sample ($N = 119$): $H_0 = 72.34 \pm 0.60$. Squares are medians in 10 log-$z$ bins. The bottom panel shows the residuals with respect to the best fit; the dashed and dotted lines are the offsets that $H_0 = 73$ and $65$ would imply.*
+*Forced-photometry sample ($N = 119$): $H_0 = 72.37 \pm 0.60$ (the value varies by about 0.03 between runs, because the $\Delta m_{15}$ uncertainties come from Monte-Carlo draws). Squares are medians in 10 log-$z$ bins. The bottom panel shows the residuals with respect to the best fit; the dashed and dotted lines are the offsets that $H_0 = 73$ and $65$ would imply.*
 
-The binned residuals trend from about $+0.35$ mag at $z \approx 0.02$ to $-0.44$ mag at $z \approx 0.1$. A flat $\Lambda\mathrm{CDM}$ model with a free $H_0$ cannot absorb a trend with redshift. We have not investigated its origin.
+The binned residuals trend from about $+0.35$ mag at $z \approx 0.02$ to $-0.45$ mag at $z \approx 0.1$. A flat $\Lambda\mathrm{CDM}$ model with a free $H_0$ cannot absorb a trend with redshift. We have not investigated its origin.
 
 ### 6.1 Summary of the two fits
 
@@ -201,8 +179,8 @@ The binned residuals trend from about $+0.35$ mag at $z \approx 0.02$ to $-0.44$
 | Unique SNe Ia, $N$ | $119$ | $1{,}442$ |
 | $\Omega_m$, $M_0$ | $0.30$, $-19.3$ (fixed) | $0.30$, $-19.3$ (fixed) |
 | $\sigma_{\mathrm{int}}$ | $0.17$ mag (fixed) | $0.17$ mag (fixed) |
-| **Best-fit $H_0$** (km s$^{-1}$ Mpc$^{-1}$, stat) | **$72.34 \pm 0.60$** | **$68.28 \pm 0.16$** |
-| $\chi^2/\mathrm{dof}$ | $5.20$ | $2.57$ |
+| **Best-fit $H_0$** (km s$^{-1}$ Mpc$^{-1}$, stat) | **$72.37 \pm 0.60$** | **$68.28 \pm 0.16$** |
+| $\chi^2/\mathrm{dof}$ | $5.21$ | $2.57$ |
 
 <p align="center">
   <img src="assets/figs/snia_hubble_diagram.png" width="70%" alt="Hubble diagram of the legacy March 2026 sample (N=1,442)"/>
