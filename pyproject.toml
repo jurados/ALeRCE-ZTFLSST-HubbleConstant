@@ -18,4 +18,5 @@ dependencies = [
     "pyarrow>=26.0.1",
     "pyvo>=1.10.0",
     "scikit-learn>=1.9.1",
+    "astroquery>=0.4.11",
 ]

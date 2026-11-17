@@ -3,4 +3,4 @@ __pycache__/
 .ipynb_checkpoints/
 data/
 
-!data/classification_FF_20260309.cv
+!data/classification_FF_20260309.csv
