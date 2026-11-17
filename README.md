@@ -128,7 +128,7 @@ $$F(t) = c + \begin{cases}
 
 The fit uses bounded `scipy.optimize.curve_fit` on the peak-normalized flux. The peak $t_{\mathrm{peak}}$ is the maximum of the fitted curve (not $t_0$). The **rest-frame decline rate** is measured $15(1+z)$ observer-frame days after the peak ([Phillips 1993](https://doi.org/10.1086/186970)):
 
-$$\Delta m_{15} = m(t_{\mathrm{peak}} + 15) - m(t_{\mathrm{peak}}) = 2.5\log_{10}\frac{F(t_{\mathrm{peak}})}{F\!\left(t_{\mathrm{peak}} + 15\,(1+z)\right)}$$
+$$\Delta m_{15} = m(t_{\mathrm{peak}} + 15) - m(t_{\mathrm{peak}}) = 2.5\log_{10}\frac{F(t_{\mathrm{peak}})}{F\left(t_{\mathrm{peak}} + 15\,(1+z)\right)}$$
 
 <p align="center">
   <img src="assets/figs/ztf26aaebmad_villar_fit_dm15.png" width="85%" alt="ZTF26aaebmad Villar 2019 fit and Δm15"/>
@@ -159,11 +159,11 @@ $$\sigma_{m_B^{\mathrm{eff}}} = \sqrt{\sigma_{m_{\mathrm{peak}}}^2 + (\alpha\,\s
 
 In a flat $\Lambda\mathrm{CDM}$ universe with $\Omega_m = 0.30$:
 
-$$m_{\mathrm{model}}(z; H_0) = M_0 + 5\log_{10}\!\left(\frac{d_L(z; H_0, \Omega_m)}{\mathrm{Mpc}}\right) + 25,\qquad d_L = \frac{c(1+z)}{H_0}\int_0^z \frac{\mathrm{d}z'}{\sqrt{\Omega_m(1+z')^3 + 1 - \Omega_m}}$$
+$$m_{\mathrm{model}}(z; H_0) = M_0 + 5\log_{10}\left(\frac{d_L(z; H_0, \Omega_m)}{\mathrm{Mpc}}\right) + 25,\qquad d_L = \frac{c(1+z)}{H_0}\int_0^z \frac{\mathrm{d}z'}{\sqrt{\Omega_m(1+z')^3 + 1 - \Omega_m}}$$
 
 with the fiducial absolute magnitude fixed at $M_0 = -19.3$. $H_0$ is the value that minimizes
 
-$$\chi^2(H_0) = \sum_i \left(\frac{m_{B,i}^{\mathrm{eff}} - m_{\mathrm{model}}(z_i; H_0)}{\sigma_i}\right)^2,\qquad \sigma_i^2 = \sigma_{m_B^{\mathrm{eff}},i}^2 + \left(\frac{5}{\ln 10}\frac{\sigma_v}{c\,z_i}\right)^2$$
+$$\chi^2(H_0) = \sum_i \left(\frac{m_{B,i}^{\mathrm{eff}} - m_{\mathrm{model}}(z_i; H_0)}{\sigma_i}\right)^2,\qquad \sigma_i^2 = \sigma_{m_B^{\mathrm{eff}},i}^2 + \left(\frac{5}{\ln 10}\frac{\sigma_v}{cz_i}\right)^2$$
 
 where the last term is the peculiar-velocity error ($\sigma_v = 250$ km s$^{-1}$). The $1\sigma$ interval is the range where $\chi^2$ rises by 1. One point per SN (its peak) is used.
 
