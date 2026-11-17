@@ -128,7 +128,7 @@ $$F(t) = c + \begin{cases}
 
 The fit uses bounded `scipy.optimize.curve_fit` on the peak-normalized flux. The peak $t_{\mathrm{peak}}$ is the maximum of the fitted curve (not $t_0$). The **rest-frame decline rate** is measured $15(1+z)$ observer-frame days after the peak ([Phillips 1993](https://doi.org/10.1086/186970)):
 
-$$\Delta m_{15} = m(t_{\mathrm{peak}} + 15) - m(t_{\mathrm{peak}}) = 2.5\log_{10}\frac{F(t_{\mathrm{peak}})}{F\left(t_{\mathrm{peak}} + 15\,(1+z)\right)}$$
+$$\Delta m_{15} = m(t_{\mathrm{peak}} + 15) - m(t_{\mathrm{peak}}) = 2.5\log_{10}\frac{F(t_{\mathrm{peak}})}{F\left(t_{\mathrm{peak}} + 15(1+z)\right)}$$
 
 <p align="center">
   <img src="assets/figs/ztf26aaebmad_villar_fit_dm15.png" width="85%" alt="ZTF26aaebmad Villar 2019 fit and Δm15"/>
